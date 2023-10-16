@@ -41,22 +41,37 @@ threads=128
 8)测试表数量(不传参时，默认128个)
 
 tables=128 
+
 9)测试表行数(不传参时，默认500万行)
+
 table_size=5000
 
 ===docker镜像===
+
 sysbech工具功能列表
-1.准备数据(已注释,使用2-7功能默认造数)
+
+1.准备数据(1已注释,使用2-7功能默认造数)
+
 2.综合读写TPS
+
 3.只读性能
+
 4.写入性能
+
 5.删除性能
+
 6.更新索引字段性能
+
 7.更新非索引字段性能
+
 8.清除数据
+
 任选一项列表功能传入/sysbench/sysbench.sh脚本
+
 镜像运行命令：sh /sysbench/sysbench.sh 2
 
 日志打印在镜像/sysbench_log_dir目录下，需要映射到本地查看
+
 创建的测试库名称为:sysbench_test_db
+
 测试库中sysbench_test_db__info_table表，存储表数量和行数量
