@@ -32,7 +32,7 @@ spec:
             #   value: "500000"
           command:
             - "sh"
-           # - "-x"
+            # - "-x"
             - "/sysbench/sysbench.sh"
             - "2"
       restartPolicy: Never
