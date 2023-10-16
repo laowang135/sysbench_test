@@ -1,5 +1,5 @@
 #!/bin/bash
-# DATE 2023-10-15
+# DATE 2023-10-16
 # VERSION 3.0
 # DESC sysbench tool benchmark
 # 测试参数的默认值

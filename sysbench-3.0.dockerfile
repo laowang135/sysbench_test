@@ -45,6 +45,5 @@ WORKDIR /sysbench-1.0.20
 
 # RUN 
 # 指定默认命令，可以在容器中运行 Sysbench
-#CMD ["sysbench","--version"]
 #ENTRYPOINT ["sh","/sysbench-1.0.20/sysbench.sh"]
 CMD ["sh","/sysbench/sysbench.sh"]
