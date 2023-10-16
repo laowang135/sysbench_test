@@ -38,4 +38,3 @@ spec:
             - "2"
       restartPolicy: Never
   backoffLimit: 2
-
