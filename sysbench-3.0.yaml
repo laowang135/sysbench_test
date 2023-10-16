@@ -32,6 +32,7 @@ spec:
             #   value: "500000"
           command:
             - "sh"
+            # 调试参数容器时请打开-x参数
             # - "-x"
             - "/sysbench/sysbench.sh"
             - "2"
