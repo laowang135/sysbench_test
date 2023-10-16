@@ -12,6 +12,7 @@ k8s使用镜像需要以下传入参数(带*号为必填项)：
 mysql_host="172.17.139.180"
 2)MySQL端口*
 mysql_port="3307"
+
 3)MySQL用户*
 mysql_user="admin"
 4)MySQL密码*
