@@ -84,8 +84,11 @@ docker 运行命令:
 后台执行：docker run -it -d -e mysql_host="172.17.139.180" -e mysql_port="3307" -e mysql_user="admin" -e mysql_password='!QAZ2wsx'  sysbench-alpine:v3.0 sh /sysbench/sysbench.sh 2
 
 查看压测信息：docker logs -tf $sysbench_container_name
+
 ============k8s yaml文件============
+
 k8s 运行命令：kubectl apply -f sysbench-3.0.yaml
+
 k8s 查看测试报告命令: kubectl logs -f $pod_name
 
 
