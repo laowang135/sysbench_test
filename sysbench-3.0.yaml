@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sysbench-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: sysbench-container
+          image: 172.17.136.180/wang/sysbench-alpine:v3.0
+          imagePullPolicy: Always 
+          env:
+            - name: mysql_host
+              value: "172.17.139.180"
+            # - name: mysql_user
+            #   value: "admin"
+            # - name: mysql_password
+            #   value: "!QAZ2wsx"
+            - name: mysql_port
+              value: "3307"
+            - name: mysql-db
+              value: "testdb"
+            # - name: test_time
+            #   value: "60"
+            # - name: report_interval
+            #   value: "3"
+            # - name: threads
+            #   value: "12"
+            # - name: tables
+            #   value: "12"
+            # - name: table_size
+            #   value: "500000"
+          command:
+            - "sh"
+            - "-x"
+            - "/sysbench/sysbench.sh"
+            - "2"
+      restartPolicy: Never
+  backoffLimit: 2
+

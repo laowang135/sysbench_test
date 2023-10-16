@@ -27,7 +27,7 @@ FROM 172.17.136.180/test/alpine:latest
 
 # 复制第一阶段中编译好的 Sysbench 可执行文件到最终镜像中
 COPY --from=builder /sysbench-1.0.20/src/sysbench /usr/bin/mysql /usr/local/bin/
-COPY sysbench-1.0.20.tar.gz sysbench-1013.sh /
+COPY sysbench-1.0.20.tar.gz sysbench-3.0.sh /
 COPY --from=builder /usr/lib/libstdc++.so.6 /usr/lib/libstdc++.so.6.0.28  /usr/lib/libncursesw.so.6 /usr/lib/libncursesw.so.6 /lib/
 # 清理不需要的文件和依赖项
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
@@ -36,10 +36,10 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     tar -xf /sysbench-1.0.20.tar.gz && \
     rm -f /sysbench-1.0.20.tar.gz && \
     mkdir /script && \
-    mv /sysbench-1013.sh /script/sysbench.sh && \
+    mv /sysbench-3.0.sh /script/sysbench.sh && \
     ln -s /sysbench-1.0.20 /sysbench && \
     ln -s /script/sysbench.sh /sysbench/sysbench.sh
-    
+
 # 进入 Sysbench 源代码目录
 WORKDIR /sysbench-1.0.20
 
