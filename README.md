@@ -14,37 +14,37 @@ k8s使用镜像需要以下传入参数(带*号为必填项)：
 
 mysql_host="172.17.139.180"
 
-2)MySQL端口*
+2)MySQL端口(默认值"16310")
 
-mysql_port="3307"
+mysql_port="16310"
 
-3)MySQL用户*
+3)MySQL用户(默认值"admin")
 
 mysql_user="admin"
 
-4)MySQL密码*
+4)MySQL密码(默认值"!QAZ2wsx")
 
 mysql_password="!QAZ2wsx"
 
-5)压测时间(不传参时，默认60s)
+5)压测时间(默认值60s)
 
-test_time=30
+test_time=60
 
-6)输出信息间隔时间(不传参时，默认3秒)
+6)输出信息间隔时间(默认值3秒)
 
 report_interval=3
 
-7)并发线程数量(不传参时，默认128个)
+7)并发线程数量(默认值32个)
 
-threads=128
+threads=32
 
-8)测试表数量(不传参时，默认128个)
+8)测试表数量(默认值32个)
 
-tables=128 
+tables=32
 
-9)测试表行数(不传参时，默认500万行)
+9)测试表行数(默认值100万行)
 
-table_size=5000
+table_size=1000000
 
 ===docker镜像===
 
