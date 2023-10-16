@@ -7,6 +7,7 @@ docker build命令:docker build -t sysbench-alpine:v2.0 -f ./sysbench.dockerfile
 ===k8s yaml文件===
 
 k8s使用镜像需要以下传入参数(带*号为必填项)：
+
 1)MySQL地址*
 mysql_host="172.17.139.180"
 2)MySQL端口*
