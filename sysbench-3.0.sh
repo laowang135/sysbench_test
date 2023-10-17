@@ -22,7 +22,7 @@ echo -e "\n\n$(date)\nsysbech 工具功能列表\n \
 8.清除数据(oltp_read_write cleanup)" 2>&1
 # num0 请输入要执行的操作
 function mysql_cmd(){
-	mysql -u${mysql_user:='admin'}  -p${mysql_password:='!QAZ2wsx'} -h${mysql_host} -P${mysql_port:=16310}  -Nse "$1"  2>&1
+	timeout 10 mysql -u${mysql_user:='admin'}  -p${mysql_password:='!QAZ2wsx'} -h${mysql_host} -P${mysql_port:=16310}  -Nse "$1"  2>&1
 }
 function sysbench_run(){
 	num0=$1
