@@ -75,7 +75,7 @@ fi
 if [ $# -eq 1 ] && [[ $1 =~ ^[2-8]$ ]]; then
 	if [[ $1 =~ ^[2-7]$ ]];then
 	    echo "参数传入为$1,验证测试端是否有数据存在..." 
-			sysbench_test_db_info=$(mysql -u${mysql_user:='admin'}  -p${mysql_password:='!QAZ2wsx'} -h${mysql_host} -P${mysql_port:=16310}  -Nse "select * from ${mysql_db:=sysbench_test_db}.${sysbench_db_info_table};")
+			sysbench_test_db_info=$(timeout 10 mysql -u${mysql_user:='admin'}  -p${mysql_password:='!QAZ2wsx'} -h${mysql_host} -P${mysql_port:=16310}  -Nse "select * from ${mysql_db:=sysbench_test_db}.${sysbench_db_info_table};")
 			if [ -z "$sysbench_test_db_info" ];then
 				echo "${mysql_db:=sysbench_test_db}.${sysbench_db_info_table}信息为空，开始写入数据..." 2>&1
 				sysbench_run 1
