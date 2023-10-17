@@ -12,14 +12,14 @@
 # 存储sysbench_db信息的表
 sysbench_db_info_table=${mysql_db:=sysbench_test_db}_info_table
 echo -e "\n\n$(date)\nsysbech 工具功能列表\n \
-#1.准备数据 \n \
-2.综合读写TPS\n \
-3.只读性能\n \
-4.写入性能\n \
-5.删除性能\n \
-6.更新索引字段性能 \n \
-7.更新非索引字段性能\n \
-8.清除数据" 2>&1
+#1.准备数据(oltp_read_write prepare) \n \
+2.综合读写TPS(oltp_read_write)\n \
+3.只读性能(oltp_read_only)\n \
+4.写入性能(oltp_write_only)\n \
+5.删除性能(oltp_delete)\n \
+6.更新索引字段性能(oltp_update_index) \n \
+7.更新非索引字段性能(oltp_update_non_index)\n \
+8.清除数据(oltp_read_write cleanup)" 2>&1
 # num0 请输入要执行的操作
 function mysql_cmd(){
 	mysql -u${mysql_user:='admin'}  -p${mysql_password:='!QAZ2wsx'} -h${mysql_host} -P${mysql_port:=16310}  -Nse "$1"  2>&1
@@ -79,7 +79,7 @@ if [ $# -eq 1 ] && [[ $1 =~ ^[2-8]$ ]]; then
 			if [ -z "$sysbench_test_db_info" ];then
 				echo "${mysql_db:=sysbench_test_db}.${sysbench_db_info_table}信息为空，开始写入数据..." 2>&1
 				sysbench_run 1
-				if [ $? -eq 0 ];then 
+				if [ $? -eq 0 ];then
 					mysql_cmd "insert into ${mysql_db:=sysbench_test_db}.${sysbench_db_info_table} (id,tables,table_size) values (1,${tables},${table_size});"
 					if [ $? -eq 0 ];then
 						sysbench_run $1
