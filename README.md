@@ -79,9 +79,9 @@ docker build命令:docker build -t sysbench-alpine:v3.0 -f ./sysbench-3.0.docker
 
 docker 运行命令:
 
-前台执行：docker run -it -e mysql_host="172.17.139.180" -e mysql_port="3307" -e mysql_user="admin" -e mysql_password='!QAZ2wsx'  sysbench-alpine:v3.0 sh /sysbench/sysbench.sh 2
+前台执行：docker run -it -e mysql_host="172.17.139.180" -e mysql_port="3307" -e mysql_user="admin" -e mysql_password='!QAZ2wsx'  172.17.136.180/wang/sysbench-alpine:v3.0 sh /sysbench/sysbench.sh 2
 
-后台执行：docker run -it -d -e mysql_host="172.17.139.180" -e mysql_port="3307" -e mysql_user="admin" -e mysql_password='!QAZ2wsx'  sysbench-alpine:v3.0 sh /sysbench/sysbench.sh 2
+后台执行：docker run -it -d -e mysql_host="172.17.139.180" -e mysql_port="3307" -e mysql_user="admin" -e mysql_password='!QAZ2wsx'  172.17.136.180/wang/sysbench-alpine:v3.0 sh /sysbench/sysbench.sh 2
 
 查看压测信息：docker logs -tf $sysbench_container_name
 
