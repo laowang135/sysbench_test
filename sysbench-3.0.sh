@@ -63,52 +63,50 @@ function sysbench_run(){
 		;;
 	esac
 }
-if [ $1 == "sleep" ];then
-	sleep 10000 &
- else
-	echo "检验是否有${mysql_db:=sysbench_test_db}库,若没有则创建..." 2>&1
-	mysql_cmd "create database if not exists ${mysql_db:=sysbench_test_db};"
-	echo "检验是否有${mysql_db:=sysbench_test_db}.${sysbench_db_info_table}表,若没有则创建..." 2>&1
-	mysql_cmd "create table if not exists ${mysql_db:=sysbench_test_db}.${sysbench_db_info_table} (id int primary key,tables int,table_size int);"
-	if [ $? -ne 0 ];then
-		echo "mysql执行SQL失败!!!请检查" 2>&1
-		exit 1
-	fi
-	# 检查参数是否为1个且为整数，并在1-8之间
-	if [ $# -eq 1 ] && [[ $1 =~ ^[2-8]$ ]]; then
-		if [[ $1 =~ ^[2-7]$ ]];then
-		    echo "参数传入为$1,验证测试端是否有数据存在..." 
-				sysbench_test_db_info=$(timeout 10 mysql -u${mysql_user:='admin'}  -p${mysql_password:='!QAZ2wsx'} -h${mysql_host} -P${mysql_port:=16310}  -Nse "select * from ${mysql_db:=sysbench_test_db}.${sysbench_db_info_table};")
-				if [ -z "$sysbench_test_db_info" ];then
-					echo "${mysql_db:=sysbench_test_db}.${sysbench_db_info_table}信息为空，开始写入数据..." 2>&1
-					sysbench_run 1
+
+echo "检验是否有${mysql_db:=sysbench_test_db}库,若没有则创建..." 2>&1
+mysql_cmd "create database if not exists ${mysql_db:=sysbench_test_db};"
+echo "检验是否有${mysql_db:=sysbench_test_db}.${sysbench_db_info_table}表,若没有则创建..." 2>&1
+mysql_cmd "create table if not exists ${mysql_db:=sysbench_test_db}.${sysbench_db_info_table} (id int primary key,tables int,table_size int);"
+if [ $? -ne 0 ];then
+	echo "mysql执行SQL失败!!!请检查" 2>&1
+	exit 1
+fi
+# 检查参数是否为1个且为整数，并在1-8之间
+if [ $# -eq 1 ] && [[ $1 =~ ^[2-8]$ ]]; then
+	if [[ $1 =~ ^[2-7]$ ]];then
+	    echo "参数传入为$1,验证测试端是否有数据存在..." 
+			sysbench_test_db_info=$(timeout 10 mysql -u${mysql_user:='admin'}  -p${mysql_password:='!QAZ2wsx'} -h${mysql_host} -P${mysql_port:=16310}  -Nse "select * from ${mysql_db:=sysbench_test_db}.${sysbench_db_info_table};")
+			if [ -z "$sysbench_test_db_info" ];then
+				echo "${mysql_db:=sysbench_test_db}.${sysbench_db_info_table}信息为空，开始写入数据..." 2>&1
+				sysbench_run 1
+				if [ $? -eq 0 ];then
+					mysql_cmd "insert into ${mysql_db:=sysbench_test_db}.${sysbench_db_info_table} (id,tables,table_size) values (1,${tables},${table_size});"
 					if [ $? -eq 0 ];then
-						mysql_cmd "insert into ${mysql_db:=sysbench_test_db}.${sysbench_db_info_table} (id,tables,table_size) values (1,${tables},${table_size});"
-						if [ $? -eq 0 ];then
-							sysbench_run $1
-						else
-							echo "插入测试数据失败!!!" 2>&1
-							exit 2
-						fi
+						sysbench_run $1
 					else
-						echo "记录测试数据信息失败!!!" 2>&1
-						exit 3
+						echo "插入测试数据失败!!!" 2>&1
+						exit 2
 					fi
 				else
-					tables=$(echo "${sysbench_test_db_info}" | awk '{print $2}')
-					table_size=$(echo "${sysbench_test_db_info}" | awk '{print $3}')
-					echo "表数量：${tables},表行数：${table_size}"
-					sysbench_run $1
+					echo "记录测试数据信息失败!!!" 2>&1
+					exit 3
 				fi
-		else 
-		    echo "参数传入为$1,执行功能列表第${1}项操作..." 2>&1
-			echo "删除${mysql_db:=sysbench_test_db}.${sysbench_db_info_table}表中存储的测试数据信息..."
-			mysql_cmd "delete from ${mysql_db:=sysbench_test_db}.${sysbench_db_info_table} where id = 1;"
-			sysbench_run $1
-		fi
-	else
-	  echo -e "请输入2-8的整数..数值说明请查看$0功能列表" 2>&1
-	  exit 4
+			else
+				tables=$(echo "${sysbench_test_db_info}" | awk '{print $2}')
+				table_size=$(echo "${sysbench_test_db_info}" | awk '{print $3}')
+				echo "表数量：${tables},表行数：${table_size}"
+				sysbench_run $1
+			fi
+	else 
+	    echo "参数传入为$1,执行功能列表第${1}项操作..." 2>&1
+		echo "删除${mysql_db:=sysbench_test_db}.${sysbench_db_info_table}表中存储的测试数据信息..."
+		mysql_cmd "delete from ${mysql_db:=sysbench_test_db}.${sysbench_db_info_table} where id = 1;"
+		sysbench_run $1
 	fi
+else
+  echo -e "请输入2-8的整数..数值说明请查看$0功能列表" 2>&1
+  exit 4
 fi
+
 
