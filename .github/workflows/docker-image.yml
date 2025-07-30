@@ -1,7 +1,7 @@
 name: Docker Multi-Arch Build & Test
 
 on:
-  workflow_dispatch: {}  # 手动触发
+  workflow_dispatch: {}  # 支持手动触发（你可以从 GitHub UI 点击运行）
 
 jobs:
   build-and-test:
@@ -13,34 +13,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 设置 Docker Buildx（用于构建多平台镜像）
+      # 设置 Docker Buildx（支持多架构构建）
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 创建 Buildx 构建器实例
-      - name: Create new builder instance
+      # 创建 Buildx 构建器
+      - name: Create builder instance
         run: docker buildx create --name multiarch-builder --use
 
-      # 构建 amd64 镜像，并导出为本地 tar 文件（注意 --output type=docker 只能用于单平台）
+      # 构建 amd64 镜像，并导出为本地 tar 包（只构建，不推送）
       - name: Build amd64 image and export to tar
         run: |
           docker buildx build \
             --platform linux/amd64 \
+            --file sysbench-3.0.dockerfile \  # ✅ 指定自定义 Dockerfile 路径
             --output type=docker,dest=sysbench-amd64.tar \
             -t sysbench:test .
 
-      # 将 tar 包上传为 GitHub Artifact，供后续下载或调试使用
+      # 上传镜像 tar 文件为 artifact，供你手动下载
       - name: Upload Docker image tarball
         uses: actions/upload-artifact@v4
         with:
           name: sysbench-image-amd64
           path: sysbench-amd64.tar
 
-      # 导入镜像到本地 Docker（仅在当前 Runner 用于测试）
+      # 将镜像 tar 文件加载到当前 runner 中
       - name: Load Docker image
         run: docker load -i sysbench-amd64.tar
 
-      # 运行测试：验证镜像是否能正常运行脚本（例如 sysbench.sh --help）
+      # 测试镜像是否能正常运行 /sysbench/sysbench.sh --help
       - name: Test Docker image
         run: |
           docker run --rm sysbench:test sh /sysbench/sysbench.sh --help
