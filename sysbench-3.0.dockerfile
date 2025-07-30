@@ -1,5 +1,5 @@
 # 第一阶段：编译 Sysbench
-FROM 172.17.136.180/test/alpine:latest as builder
+FROM docker.m.daocloud.io/alpine:latest as builder
 
 # 更新包管理器并安装必要的构建工具和依赖项
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
@@ -23,7 +23,7 @@ RUN ./configure
 RUN make
 
 # 第二阶段：创建最终镜像
-FROM 172.17.136.180/test/alpine:latest
+FROM docker.m.daocloud.io/alpine:latest
 
 # 复制第一阶段中编译好的 Sysbench 可执行文件到最终镜像中
 COPY --from=builder /sysbench-1.0.20/src/sysbench /usr/bin/mysql /usr/local/bin/
