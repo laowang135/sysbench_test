@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [ "main" ]
-    tags: [ "v*" ]  # 监听 tag，如 v1.0.0
+    tags: [ "v1.0" ]  # 监听 tag，如 v1.0.0
 
 jobs:
   build-and-test:
@@ -15,12 +15,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 获取版本标签或使用时间戳作为 tag
+      # 设置 tag（优先使用 git tag，否则使用时间戳）
       - name: Set image tag
         id: tag
         run: |
-          echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-          echo "BUILD_TIME_TAG=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "GIT_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          else
+            echo "GIT_TAG=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          fi
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -28,7 +31,7 @@ jobs:
       - name: Create buildx builder
         run: docker buildx create --name multiarch-builder --use --bootstrap
 
-      # 启用缓存目录
+      # 启用构建缓存
       - name: Configure build cache
         uses: actions/cache@v4
         with:
@@ -37,7 +40,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      # 构建 amd64 镜像并导出为 tar，使用 tag
+      # 构建 amd64 镜像
       - name: Build amd64 image with cache
         run: |
           docker buildx build \
@@ -46,9 +49,9 @@ jobs:
             --output type=docker,dest=sysbench-amd64.tar \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache \
-            -t sysbench:amd64-${{ env.GIT_TAG || env.BUILD_TIME_TAG }} .
+            -t sysbench:amd64-${{ env.GIT_TAG }} .
 
-      # 构建 arm64 镜像并导出为 tar
+      # 构建 arm64 镜像
       - name: Build arm64 image with cache
         run: |
           docker buildx build \
@@ -57,7 +60,7 @@ jobs:
             --output type=docker,dest=sysbench-arm64.tar \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache \
-            -t sysbench:arm64-${{ env.GIT_TAG || env.BUILD_TIME_TAG }} .
+            -t sysbench:arm64-${{ env.GIT_TAG }} .
 
       # 上传镜像 tar 文件
       - name: Upload amd64 image
@@ -72,9 +75,26 @@ jobs:
           name: sysbench-image-arm64
           path: sysbench-arm64.tar
 
-      # 测试镜像是否能运行
+      # 加载并测试镜像
       - name: Load amd64 image for test
         run: docker load -i sysbench-amd64.tar
 
       - name: Test sysbench image
-        run: docker run --rm sysbench:amd64-${{ env.GIT_TAG || env.BUILD_TIME_TAG }} sysbench --help
+        run: docker run --rm sysbench:amd64-${{ env.GIT_TAG }} sysbench --help
+
+      # 发布到 GitHub Release（仅打 tag 时执行）
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            sysbench-amd64.tar
+            sysbench-arm64.tar
+          tag_name: ${{ env.GIT_TAG }}
+          name: Sysbench Release ${{ env.GIT_TAG }}
+          body: |
+            This is an automated release for tag `${{ env.GIT_TAG }}`.
+
+            Includes:
+            - sysbench-amd64.tar
+            - sysbench-arm64.tar
