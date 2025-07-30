@@ -76,7 +76,7 @@ sysbech工具功能列表
 
 测试库中sysbench_test_db__info_table表，用来存储表数量和行数量
 
-docker build命令:docker build -t sysbench-alpine:v3.0 -f ./sysbench-3.0.dockerfile .
+docker build命令:`docker build -t sysbench-alpine:v3.0 -f ./sysbench-3.0.dockerfile .`
 
 docker 运行命令:
 
