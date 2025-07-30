@@ -28,7 +28,7 @@ FROM 172.17.136.180/test/alpine:latest
 # 复制第一阶段中编译好的 Sysbench 可执行文件到最终镜像中
 COPY --from=builder /sysbench-1.0.20/src/sysbench /usr/bin/mysql /usr/local/bin/
 COPY sysbench-1.0.20.tar.gz sysbench-3.0.sh /
-COPY --from=builder /usr/lib/libstdc++.so.6 /usr/lib/libstdc++.so.6.0.28  /usr/lib/libncursesw.so.6 /usr/lib/libncursesw.so.6 /lib/
+COPY --from=builder /usr/lib/libstdc++.so.6 /usr/lib/libstdc++.so.6.0.28  /usr/lib/libncursesw.so.6 /lib/
 # 清理不需要的文件和依赖项
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
     apk --no-cache add mariadb-connector-c openssl libgcc  && \
