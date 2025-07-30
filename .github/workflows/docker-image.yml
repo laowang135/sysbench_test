@@ -41,7 +41,7 @@ jobs:
       - name: Load Docker image
         run: docker load -i sysbench-amd64.tar
 
-      # 测试镜像是否能正常运行 /sysbench.sh --help
+      # 测试镜像是否能正常运行 sysbench --help
       - name: Test Docker image
         run: |
-          docker run --rm sysbench:test sh /sysbench.sh --help
+          docker run --rm sysbench:test sysbench --help
