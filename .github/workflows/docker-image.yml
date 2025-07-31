@@ -2,6 +2,9 @@ name: Docker Multi-Arch Build & Test with Tags & Cache
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    tags: [ "v*" ]  # 监听 tag，如 v1.0.0
 
 jobs:
   build-and-test:
