@@ -37,6 +37,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     rm -rf /var/cache/apk/* && \
     ln -s /sysbench/bin/sysbench /usr/local/bin
 
+# 添加sysbench二进制文件目录到容器环境变量
 ENV PATH="/sysbench/bin:$PATH"
 
 # 进入 Sysbench 源代码目录
