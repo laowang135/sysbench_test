@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [ "main" ]
-    tags: [ "v1.0" ]  # 监听 tag，如 v1.0.0
+    tags: [ "v*" ]  # 监听 tag，如 v1.0.0
 
 jobs:
   build-and-test:
